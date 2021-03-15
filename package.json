@@ -10,10 +10,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "python2": "0.0.1",
+    "python3": "0.0.1",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-camera": "3.43.0",
-    "react-native-permissions": "2.2.2",
+    "react-native-permissions": "^2.2.2",
     "react-native-qrcode-scanner": "1.5.3",
     "react-native-webview": "11.2.4"
   },

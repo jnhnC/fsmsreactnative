@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState }  from 'react';
-import { WebView } from 'react-native-webview'
+
 
 import {
     AppRegistry,
@@ -12,16 +12,15 @@ import {
   } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
+
 
 const QrScan = () => {
 
-    const [result, setResult] = useState(null);
+    const [result, setResult] = useState('tset');
 
   
     const onSuccess = e => {
       setResult(e.data);
-   
     };
 
   
@@ -40,7 +39,7 @@ const QrScan = () => {
         }
         bottomContent={
           <TouchableOpacity style={styles.buttonTouchable}>
-            <Text style={styles.buttonText}>{result}</Text>
+            <Text name="result" style={styles.buttonText}>{result}</Text>
           </TouchableOpacity>
         }
       />

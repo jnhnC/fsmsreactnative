@@ -1,106 +1,61 @@
 
 
-import React, { useEffect, useState, useRef } from 'react';
-import { WebView } from 'react-native-webview'
-import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import QrScan from './QrScan'
+import React from 'react';
+import { WebView } from 'react-native-webview';
+import { StyleSheet } from 'react-native';
 
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Linking,
-  View
-} from 'react-native';
+import { QrScanner } from './QrScanner'
 
-const Stack = createStackNavigator();
 
 const App = () => {
+  let webview;
+  let PopupRef = React.createRef()
 
-  const [visible, setVisible] = useState(false);
-  const [result, setResult] = useState('tset');
-  
-  const webview = useRef(null);
-
-  //화면 전환 호출
   const handleOnMessage = ({ nativeEvent: { data } }) => {
-    setVisible(true);
-    webview.postMessage("hello");
+    onShowPopup();
+  
   };
 
-  // onLoadWebview = () =>{
-  //   this.webref.postMessage(JSON.stringify(result));
+  const onShowPopup = () => {
+    PopupRef.show();
+  }
 
-  // }
+  const onClosePopup = () => {
+    PopupRef.close();
+  }
 
-  const onSuccess = e => {
-    setResult(e.data);
-    setVisible(false);
-   
-    // onLoadWebview();
+  const sendWebview = (result) => {
+    onClosePopup();
+    webview.postMessage(result);
   };
 
-  if (!visible) {
-    return (
-      <WebView
-        ref={webview}
+  return (
+
+    <>
+      <WebView 
+        ref={el => webview = el}
         source={{ uri: 'http://192.168.30.231:8080' }}
         onMessage={handleOnMessage}
 
       />
-    );
-  } else {
-
-    return (
-
-      <View style={{ width: '100%', height: '100%' }}>
-
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <QRCodeScanner
-            onRead={onSuccess}
-            // flashMode={RNCamera.Constants.FlashMode.torch}
-            topContent={
-              <Text style={styles.centerText}>
-                Go to{' '}
-                <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-            your computer and scan the QR code.
-          </Text>
-            }
-            bottomContent={
-              <TouchableOpacity style={styles.buttonTouchable}>
-                <Text name="result" style={styles.buttonText}>{result}</Text>
-              </TouchableOpacity>
-            }
-          />
-        </View>
-
-      </View>
-    );
-  }
-};
+   
+        <QrScanner
+          title="Demo Popup"
+          ref={(target) => PopupRef = target}
+          sendWebview ={sendWebview}
+        />
+ 
 
 
+    </>
+
+  );
+}
 const styles = StyleSheet.create({
-  centerText: {
+  container: {
     flex: 1,
-    fontSize: 18,
-    padding: 32,
-    color: '#777'
-  },
-  textBold: {
-    fontWeight: '500',
-    color: '#000'
-  },
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)'
-  },
-  buttonTouchable: {
-    padding: 16
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
 

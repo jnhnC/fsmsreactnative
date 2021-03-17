@@ -2,69 +2,60 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { WebView } from 'react-native-webview'
-import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import QrScan from './QrScan'
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
+  View,
+  Button,
+  ActivityIndicator,
   TouchableOpacity,
-  Linking,
-  View
 } from 'react-native';
 
-const Stack = createStackNavigator();
+
 
 const App = () => {
-
   const [visible, setVisible] = useState(false);
   const [result, setResult] = useState('tset');
   
-  // const webview = useRef();
 
   let webview ;
 
-  //화면 전환 호출
-  const handleOnMessage = ({ nativeEvent: { data } }) => {
-    setVisible(true);
-    
-  };
+  const renderLoading = () => <ActivityIndicator style={{flex:1}}
+  animating color="red" size="large"/>
 
+  const sendMessage = () =>{
+    webview.postMessage('')
+  }
 
   const onSuccess = e => {
     setResult(e.data);
     setVisible(false);
-    webview.postmessage("test");
+    webview.postMessage(e.data);
    
     // onLoadWebview();
   };
 
-  if (!visible) {
-    return (
-      <WebView
-        // ref={handleSetRef}
-        ref={el => webview = el}
-        source={{ uri: 'http://192.168.30.231:8080' }}
-        originWhitelist={['*']}
-        // injectedJavaScript="window.ReactNativeWebView.postMessage(document.title)"
-        onMessage={handleOnMessage}
-
-        
-
-      />
-    );
-  } else {
 
     return (
-
       <View style={{ width: '100%', height: '100%' }}>
 
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <QRCodeScanner
+      <Button onPress={sendMessage} title="TEST BUTTON" />
+
+      <WebView
+        ref={el => webview = el}
+        startInLoadingState={true}
+        renderLoading={renderLoading}
+        onLoad={()=> webview.postMessage('onLoad')}
+        source={{ uri: 'http://192.168.30.231:8080' }}
+        
+        // injectedJavaScript="window.ReactNativeWebView.postMessage(document.title)"
+        // onMessage={handleOnMessage}
+  
+      />
+
+       <QRCodeScanner
             onRead={onSuccess}
             // flashMode={RNCamera.Constants.FlashMode.torch}
             topContent={
@@ -80,11 +71,9 @@ const App = () => {
               </TouchableOpacity>
             }
           />
-        </View>
-
-      </View>
+          </View> 
     );
-  }
+ 
 };
 
 

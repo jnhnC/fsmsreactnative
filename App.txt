@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview'
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -22,35 +22,39 @@ const Stack = createStackNavigator();
 const App = () => {
 
   const [visible, setVisible] = useState(false);
+  const [webview, setWebview] = useState(null);
   const [result, setResult] = useState('tset');
-  
-  const webview = useRef(null);
 
   //화면 전환 호출
   const handleOnMessage = ({ nativeEvent: { data } }) => {
-    setVisible(true);
-    webview.postMessage("hello");
+    alert("리액트 호출");
+
+    // this.webview.postMessage(data);
+     setVisible(true);
+    // webview.current.injectedJavaScript(data);
+
   };
 
-  // onLoadWebview = () =>{
-  //   this.webref.postMessage(JSON.stringify(result));
-
-  // }
+  onLoadWebview = () =>{
+    
+    this.webref.postMessage(JSON.stringify(result));
+  }
 
   const onSuccess = e => {
     setResult(e.data);
     setVisible(false);
-   
-    // onLoadWebview();
   };
 
   if (!visible) {
     return (
       <WebView
-        ref={webview}
+        ref={(r) => (this.webref = r)}
         source={{ uri: 'http://192.168.30.231:8080' }}
         onMessage={handleOnMessage}
-
+        javaScriptEnabled={true}
+        onLode={this.onLoadWebview}
+        // injectedJavaScript={'(function(){return "Send me back!"}());'}
+        // onNavigationStateChange={this.handleWebViewNavigationStateChange}
       />
     );
   } else {

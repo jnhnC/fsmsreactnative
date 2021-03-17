@@ -26,7 +26,6 @@ const QrScan = () => {
   
     return (
       
-  
         <QRCodeScanner
         onRead={onSuccess}
         // flashMode={RNCamera.Constants.FlashMode.torch}
